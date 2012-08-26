@@ -29,3 +29,5 @@ STATUS
 
 26.08.2012 Initial version of the library will be available in several days from now. Stay tuned and subscribe/star
 the project to get notified :)
+
+.
