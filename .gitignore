@@ -1,0 +1,7 @@
+gen
+out
+tmp
+.idea
+*.iml
+*.jpr
+local.properties
