@@ -40,12 +40,15 @@ Very Quick Start
 
 2. Add the following set of permissions (if you don't have ones already) to your main project AndroidMnifest.xml:
 
+```xml
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
+```
 
 3. Add scan activity reference to your main project AndroidManifest.xml:
 
+```xml
      <activity android:name="com.google.zxing.client.android.CaptureActivity"
                        android:screenOrientation="landscape"
                        android:clearTaskOnLaunch="true"
@@ -60,13 +63,17 @@ Very Quick Start
                  </intent-filter>
 
      </activity>
+```     
 
 4. Now to scan a barcode, call the helper method from any place of any your own activity:
 
+```java
      ZXScanHelper.scan(this,12345);
+```     
 
 5. Add onActivityResult override to your same activity and check scan result:
 
+```java
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
     {
         if (resultCode == RESULT_OK && requestCode == 12345)
@@ -74,6 +81,7 @@ Very Quick Start
             String scannedCode = ZXScanHelper.getScannedCode(data);
         }
     }
+```    
 
 6. That's all :)
 
