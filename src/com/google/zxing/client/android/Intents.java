@@ -32,11 +32,13 @@ public final class Intents
     public static final class Scan
     {
 
+        private static String defaultScanAction = "eu.livotov.zxscan.SCAN";
+
         /**
          * Send this intent to open the Barcodes app in scanning mode, find a barcode, and return
          * the results.
          */
-        public static final String ACTION = "eu.livotov.zxscan.SCAN";
+        public static String ACTION = defaultScanAction;
 
         /**
          * By default, sending this will decode all barcodes that we understand. However it
@@ -158,5 +160,9 @@ public final class Intents
          */
         public static final String SAVE_HISTORY = "SAVE_HISTORY";
 
+        public static void resetScanAction()
+        {
+            ACTION = defaultScanAction;
+        }
     }
 }

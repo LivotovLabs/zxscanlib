@@ -16,6 +16,16 @@ public class ZXScanHelper
 
     public final static String SCANNED_RESULT = Intents.Scan.RESULT;
 
+    public final static void setCustomScanAction(final String action)
+    {
+        Intents.Scan.ACTION = action;
+    }
+
+    public static void setDefaultScanAction()
+    {
+        Intents.Scan.resetScanAction();
+    }
+
     public final static void scan(Activity ctx, int requestCode)
     {
         Intent scanIntent = new Intent(Intents.Scan.ACTION);
