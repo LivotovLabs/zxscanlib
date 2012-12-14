@@ -80,6 +80,14 @@ public final class CameraManager
         if (theCamera == null)
         {
             theCamera = new OpenCameraManager().build().open();
+
+            try
+            {
+                theCamera.setDisplayOrientation(90);
+            } catch (Throwable err)
+            {
+            }
+
             if (theCamera == null)
             {
                 throw new IOException();
@@ -320,4 +328,11 @@ public final class CameraManager
                                             rect.width(), rect.height(), false);
     }
 
+    public void setCameraOrientation(final int cameraOrientation)
+    {
+        if (camera != null)
+        {
+            camera.setDisplayOrientation(cameraOrientation);
+        }
+    }
 }

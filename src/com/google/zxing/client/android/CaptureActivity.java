@@ -19,6 +19,7 @@ package com.google.zxing.client.android;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -29,7 +30,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.*;
-import android.widget.TextView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
@@ -79,18 +79,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private CaptureActivityHandler handler;
     private Result savedResultToShow;
     private ViewfinderView viewfinderView;
-    private TextView statusView;
-    private View resultView;
     private Result lastResult;
     private boolean hasSurface;
-    private boolean copyToClipboard;
     private IntentSource source;
     private String sourceUrl;
-    private String returnUrlTemplate;
-    private boolean returnRaw;
     private Collection<BarcodeFormat> decodeFormats;
     private String characterSet;
-    private String versionName;
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
 
@@ -136,10 +130,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
         viewfinderView.setCameraManager(cameraManager);
-
-        resultView = findViewById(R.id.result_view);
-        statusView = (TextView) findViewById(R.id.status_view);
-
         handler = null;
         lastResult = null;
 
@@ -164,8 +154,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         inactivityTimer.onResume();
 
         Intent intent = getIntent();
-
-        copyToClipboard = false;
 
         source = IntentSource.NONE;
         decodeFormats = null;
@@ -195,10 +183,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 }
 
                 String customPromptMessage = intent.getStringExtra(Intents.Scan.PROMPT_MESSAGE);
-                if (customPromptMessage != null)
-                {
-                    statusView.setText(customPromptMessage);
-                }
 
             } else if (dataString != null &&
                                dataString.contains(PRODUCT_SEARCH_URL_PREFIX) &&
@@ -218,10 +202,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 source = IntentSource.ZXING_LINK;
                 sourceUrl = dataString;
                 Uri inputUri = Uri.parse(sourceUrl);
-                returnUrlTemplate = inputUri.getQueryParameter(RETURN_URL_PARAM);
-                returnRaw = inputUri.getQueryParameter(RAW_PARAM) != null;
                 decodeFormats = DecodeFormatManager.parseDecodeFormats(inputUri);
-
             }
 
             characterSet = intent.getStringExtra(Intents.Scan.CHARACTER_SET);
@@ -555,9 +536,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private void resetStatusView()
     {
-        resultView.setVisibility(View.GONE);
-        statusView.setText(R.string.zx_msg_default_status);
-        statusView.setVisibility(View.VISIBLE);
         viewfinderView.setVisibility(View.VISIBLE);
         lastResult = null;
     }
@@ -565,5 +543,20 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     public void drawViewfinder()
     {
         viewfinderView.drawViewfinder();
+    }
+
+    public void onConfigurationChanged(final Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        try
+        {
+            if (cameraManager.isOpen())
+            {
+                cameraManager.setCameraOrientation(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT ? 90 : 0);
+            }
+        } catch (Throwable err)
+        {
+            err.printStackTrace();
+        }
     }
 }
