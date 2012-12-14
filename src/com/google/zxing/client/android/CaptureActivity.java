@@ -36,6 +36,7 @@ import com.google.zxing.ResultMetadataType;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.camera.CameraManager;
 import eu.livotov.zxscan.R;
+import eu.livotov.zxscan.ZXScanHelper;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -56,7 +57,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
 
-    private static final long DEFAULT_INTENT_RESULT_DURATION_MS = 1500L;
+    private static final long DEFAULT_INTENT_RESULT_DURATION_MS = 1L;
     private static final long BULK_MODE_SCAN_DELAY_MS = 1000L;
 
     private static final String PACKAGE_NAME = "com.google.zxing.client.android";
@@ -78,7 +79,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
     private Result savedResultToShow;
-    private ViewfinderView viewfinderView;
     private Result lastResult;
     private boolean hasSurface;
     private IntentSource source;
@@ -87,11 +87,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private String characterSet;
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
-
-    ViewfinderView getViewfinderView()
-    {
-        return viewfinderView;
-    }
 
     public Handler getHandler()
     {
@@ -110,11 +105,16 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.capture);
+        setContentView(ZXScanHelper.getCustomScanLayout() > 0 ? ZXScanHelper.getCustomScanLayout() : R.layout.capture);
 
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
+
+        if (ZXScanHelper.getUserCallback() != null)
+        {
+            ZXScanHelper.getUserCallback().onScannerActivityCreated(this);
+        }
     }
 
     @Override
@@ -128,8 +128,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         // off screen.
         cameraManager = new CameraManager(getApplication());
 
-        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        viewfinderView.setCameraManager(cameraManager);
         handler = null;
         lastResult = null;
 
@@ -208,6 +206,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             characterSet = intent.getStringExtra(Intents.Scan.CHARACTER_SET);
 
         }
+
+        if (ZXScanHelper.getUserCallback() != null)
+        {
+            ZXScanHelper.getUserCallback().onScannerActivityResumed(this);
+        }
     }
 
     private static boolean isZXingURL(String dataString)
@@ -249,6 +252,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     protected void onDestroy()
     {
         inactivityTimer.shutdown();
+        if (ZXScanHelper.getUserCallback() != null)
+        {
+            ZXScanHelper.getUserCallback().onScannerActivityDestroyed(this);
+        }
         super.onDestroy();
     }
 
@@ -354,6 +361,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         {
             drawResultPoints(barcode, rawResult);
         }
+
+        if (rawResult!=null && ZXScanHelper.getUserCallback() != null)
+        {
+            ZXScanHelper.getUserCallback().onCodeRecognized(rawResult.getText());
+        }
+
         switch (source)
         {
             case NATIVE_APP_INTENT:
@@ -413,11 +426,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     // Briefly show the contents of the barcode, then handle the result outside Barcode Scanner.
     private void handleDecodeExternally(Result rawResult, Bitmap barcode)
     {
-
-        if (barcode != null)
-        {
-            viewfinderView.drawResultBitmap(barcode);
-        }
 
         if (source == IntentSource.NATIVE_APP_INTENT)
         {
@@ -536,13 +544,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private void resetStatusView()
     {
-        viewfinderView.setVisibility(View.VISIBLE);
         lastResult = null;
     }
 
     public void drawViewfinder()
     {
-        viewfinderView.drawViewfinder();
     }
 
     public void onConfigurationChanged(final Configuration newConfig)

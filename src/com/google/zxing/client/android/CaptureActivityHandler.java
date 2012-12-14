@@ -59,8 +59,7 @@ public final class CaptureActivityHandler extends Handler
                            CameraManager cameraManager)
     {
         this.activity = activity;
-        decodeThread = new DecodeThread(activity, decodeFormats, characterSet,
-                                        new ViewfinderResultPointCallback(activity.getViewfinderView()));
+        decodeThread = new DecodeThread(activity, decodeFormats, characterSet,new ViewfinderResultPointCallback(null));
         decodeThread.start();
         state = State.SUCCESS;
 
@@ -118,7 +117,7 @@ public final class CaptureActivityHandler extends Handler
         try
         {
             // Wait at most half a second; should be enough time, and onPause() will timeout quickly
-            decodeThread.join(500L);
+            decodeThread.join(1L);
         } catch (InterruptedException e)
         {
             // continue

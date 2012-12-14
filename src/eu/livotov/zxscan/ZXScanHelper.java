@@ -14,7 +14,8 @@ import com.google.zxing.client.android.Intents;
 public class ZXScanHelper
 {
 
-    public final static String SCANNED_RESULT = Intents.Scan.RESULT;
+    private static int customScanLayout = 0;
+    private static ZXUserCallback userCallback;
 
     public final static void setCustomScanAction(final String action)
     {
@@ -34,6 +35,26 @@ public class ZXScanHelper
 
     public final static String getScannedCode(Intent resultData)
     {
-        return resultData != null ? resultData.getStringExtra(SCANNED_RESULT) : null;
+        return resultData != null ? resultData.getStringExtra(Intents.Scan.RESULT) : null;
+    }
+
+    public static void setCustomScanLayout(final int customScanLayoutRes)
+    {
+        ZXScanHelper.customScanLayout = customScanLayoutRes;
+    }
+
+    public static int getCustomScanLayout()
+    {
+        return customScanLayout;
+    }
+
+    public static ZXUserCallback getUserCallback()
+    {
+        return userCallback;
+    }
+
+    public static void setUserCallback(final ZXUserCallback userCallback)
+    {
+        ZXScanHelper.userCallback = userCallback;
     }
 }
