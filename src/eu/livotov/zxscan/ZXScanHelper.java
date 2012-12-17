@@ -15,6 +15,7 @@ public class ZXScanHelper
 {
 
     private static int customScanLayout = 0;
+    private static int customScanSound = 0;
     private static ZXUserCallback userCallback;
 
     public final static void setCustomScanAction(final String action)
@@ -56,5 +57,15 @@ public class ZXScanHelper
     public static void setUserCallback(final ZXUserCallback userCallback)
     {
         ZXScanHelper.userCallback = userCallback;
+    }
+
+    public static int getCustomScanSound()
+    {
+        return customScanSound;
+    }
+
+    public static void setCustomScanSound(final int customScanSound)
+    {
+        ZXScanHelper.customScanSound = customScanSound;
     }
 }
