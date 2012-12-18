@@ -1,8 +1,15 @@
 package eu.livotov.zxscan;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.text.TextUtils;
+import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.Intents;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,22 +23,43 @@ public class ZXScanHelper
 
     private static int customScanLayout = 0;
     private static int customScanSound = 0;
+    private static boolean playSoundOnRead = true;
+    private static boolean vibrateOnRead = true;
+    private static boolean useExternalApplicationIfAvailable = false;
     private static ZXUserCallback userCallback;
-
-    public final static void setCustomScanAction(final String action)
-    {
-        Intents.Scan.ACTION = action;
-    }
-
-    public static void setDefaultScanAction()
-    {
-        Intents.Scan.resetScanAction();
-    }
 
     public final static void scan(Activity ctx, int requestCode)
     {
-        Intent scanIntent = new Intent(Intents.Scan.ACTION);
+        Intent scanIntent = useExternalApplicationIfAvailable ? getExternalApplicationIntent(ctx) : null;
+
+        if (scanIntent == null)
+        {
+            scanIntent = new Intent(ctx, CaptureActivity.class);
+        }
+
         ctx.startActivityForResult(scanIntent, requestCode);
+    }
+
+    private static Intent getExternalApplicationIntent(final Context ctx)
+    {
+        PackageManager pm = ctx.getPackageManager();
+        Intent intent = new Intent(Intents.Scan.ACTION);
+
+        List<ResolveInfo> availableApps = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+        for (ResolveInfo availableApp : availableApps)
+        {
+            final String packageName = availableApp.activityInfo.packageName;
+            if (!TextUtils.isEmpty(packageName))
+            {
+                if (packageName.contains("com.google.zxing.client.android") || packageName.contains("com.srowen.bs.android"))
+                {
+                    return intent;
+                }
+            }
+        }
+
+        return null;
     }
 
     public final static String getScannedCode(Intent resultData)
@@ -67,5 +95,35 @@ public class ZXScanHelper
     public static void setCustomScanSound(final int customScanSound)
     {
         ZXScanHelper.customScanSound = customScanSound;
+    }
+
+    public static boolean isUseExternalApplicationIfAvailable()
+    {
+        return useExternalApplicationIfAvailable;
+    }
+
+    public static void setUseExternalApplicationIfAvailable(final boolean b)
+    {
+        useExternalApplicationIfAvailable = b;
+    }
+
+    public static boolean isPlaySoundOnRead()
+    {
+        return playSoundOnRead;
+    }
+
+    public static void setPlaySoundOnRead(final boolean playSoundOnRead)
+    {
+        ZXScanHelper.playSoundOnRead = playSoundOnRead;
+    }
+
+    public static boolean isVibrateOnRead()
+    {
+        return vibrateOnRead;
+    }
+
+    public static void setVibrateOnRead(final boolean vibrateOnRead)
+    {
+        ZXScanHelper.vibrateOnRead = vibrateOnRead;
     }
 }

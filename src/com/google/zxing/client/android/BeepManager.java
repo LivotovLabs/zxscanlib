@@ -18,18 +18,11 @@ package com.google.zxing.client.android;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import eu.livotov.zxscan.R;
 import eu.livotov.zxscan.ZXScanHelper;
-
-import java.io.IOException;
 
 /**
  * Manages beeps and vibrations for {@link CaptureActivity}.
@@ -37,16 +30,11 @@ import java.io.IOException;
 final class BeepManager
 {
 
-    private static final String TAG = BeepManager.class.getSimpleName();
-
-    private static final float BEEP_VOLUME = 0.10f;
     private static final long VIBRATE_DURATION = 200L;
 
     private final Activity activity;
     private int beepSoundId;
     SoundPool soundPool;
-    private boolean playBeep;
-    private boolean vibrate;
 
     BeepManager(Activity activity)
     {
@@ -61,47 +49,21 @@ final class BeepManager
             beepSoundId = soundPool.load(activity, R.raw.beep, 1);
         }
 
-        updatePrefs();
+        activity.setVolumeControlStream(AudioManager.STREAM_NOTIFICATION);
     }
 
-    void updatePrefs()
+    void vibrate()
     {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        playBeep = shouldBeep(prefs, activity);
-        vibrate = false; //todo control vibrate or not
-        if (playBeep)
-        {
-            activity.setVolumeControlStream(AudioManager.STREAM_NOTIFICATION);
-        }
+        Vibrator vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(VIBRATE_DURATION);
     }
 
-    void playBeepSoundAndVibrate()
+    void playBeep()
     {
-        if (playBeep && soundPool != null)
+        if (soundPool != null)
         {
             soundPool.play(beepSoundId, 1.0f, 1.0f, 5, 0, 1.0f);
         }
-
-        if (vibrate)
-        {
-            Vibrator vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(VIBRATE_DURATION);
-        }
-    }
-
-    private static boolean shouldBeep(SharedPreferences prefs, Context activity)
-    {
-        boolean shouldPlayBeep = true; //todo: control beep or no beep
-        if (shouldPlayBeep)
-        {
-            // See if sound settings overrides this
-            AudioManager audioService = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
-            if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
-            {
-                shouldPlayBeep = false;
-            }
-        }
-        return shouldPlayBeep;
     }
 
 }
