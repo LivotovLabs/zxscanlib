@@ -414,7 +414,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         }
         try
         {
-            cameraManager.openDriver(surfaceHolder);
+            cameraManager.openDriver(this,surfaceHolder);
             // Creating the handler starts the preview, which can also throw a RuntimeException.
             if (handler == null)
             {

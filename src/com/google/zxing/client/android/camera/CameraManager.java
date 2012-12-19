@@ -17,6 +17,7 @@
 package com.google.zxing.client.android.camera;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
@@ -74,7 +75,7 @@ public final class CameraManager
      * @param holder The surface object which the camera will draw preview frames into.
      * @throws IOException Indicates the camera driver failed to open.
      */
-    public synchronized void openDriver(SurfaceHolder holder) throws IOException
+    public synchronized void openDriver(Context ctx, SurfaceHolder holder) throws IOException
     {
         Camera theCamera = camera;
         if (theCamera == null)
@@ -83,7 +84,7 @@ public final class CameraManager
 
             try
             {
-                theCamera.setDisplayOrientation(90);
+                theCamera.setDisplayOrientation(ctx.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 90 : 0);
             } catch (Throwable err)
             {
             }

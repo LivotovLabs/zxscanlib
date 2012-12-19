@@ -26,6 +26,7 @@ public class ZXScanHelper
     private static boolean playSoundOnRead = true;
     private static boolean vibrateOnRead = true;
     private static boolean useExternalApplicationIfAvailable = false;
+    private static AutofocusMode autofocusMode = AutofocusMode.On;
     private static ZXUserCallback userCallback;
 
     public final static void scan(Activity ctx, int requestCode)
@@ -125,5 +126,15 @@ public class ZXScanHelper
     public static void setVibrateOnRead(final boolean vibrateOnRead)
     {
         ZXScanHelper.vibrateOnRead = vibrateOnRead;
+    }
+
+    public static AutofocusMode getAutofocusMode()
+    {
+        return autofocusMode;
+    }
+
+    public static void setAutofocusMode(final AutofocusMode autofocusMode)
+    {
+        ZXScanHelper.autofocusMode = autofocusMode;
     }
 }
