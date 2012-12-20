@@ -468,7 +468,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         {
             if (cameraManager.isOpen())
             {
-                cameraManager.setCameraOrientation(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT ? 90 : 0);
+                cameraManager.forceSetCameraOrientation();
             }
         } catch (Throwable err)
         {
