@@ -333,13 +333,16 @@ public final class CameraManager
 
     public synchronized void forceSetCameraOrientation()
     {
-        lastRotationAngle = -1;
-        setCameraOrientation();
+        if (Build.VERSION.SDK_INT > 7)
+        {
+            lastRotationAngle = -1;
+            setCameraOrientation();
+        }
     }
 
     public synchronized void setCameraOrientation()
     {
-        if (camera != null)
+        if (camera != null && Build.VERSION.SDK_INT > 7)
         {
             try
             {
@@ -349,20 +352,13 @@ public final class CameraManager
                 int angle = Surface.ROTATION_0;
 
 
-                if (lastRotationAngle==angle)
+                if (lastRotationAngle == angle)
                 {
                     return;
                 }
 
                 boolean tablet = isTablet();
-
-                if (Build.VERSION.SDK_INT < 8)
-                {
-                    angle = display.getOrientation();
-                } else
-                {
-                    angle = display.getRotation();
-                }
+                angle = display.getRotation();
 
                 switch (angle)
                 {

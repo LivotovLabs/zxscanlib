@@ -19,6 +19,7 @@ package com.google.zxing.client.android;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -79,6 +80,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     public void onCreate(Bundle icicle)
     {
         super.onCreate(icicle);
+
+        if (android.os.Build.VERSION.SDK_INT < 8 || ZXScanHelper.isBlockCameraRotation())
+        {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -414,7 +420,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         }
         try
         {
-            cameraManager.openDriver(this,surfaceHolder);
+            cameraManager.openDriver(this, surfaceHolder);
             // Creating the handler starts the preview, which can also throw a RuntimeException.
             if (handler == null)
             {
