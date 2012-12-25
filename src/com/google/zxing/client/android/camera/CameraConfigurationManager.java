@@ -26,6 +26,8 @@ import android.view.Display;
 import android.view.WindowManager;
 import com.google.zxing.client.android.camera.exposure.ExposureInterface;
 import com.google.zxing.client.android.camera.exposure.ExposureManager;
+import eu.livotov.zxscan.AutofocusMode;
+import eu.livotov.zxscan.ZXScanHelper;
 
 import java.util.*;
 
@@ -96,8 +98,8 @@ final class CameraConfigurationManager
         String focusMode = null;
 
         //todo: control those settings
-        boolean autofocus = true;
-        boolean disableContinuousFocus = false;
+        boolean autofocus = ZXScanHelper.getAutofocusMode() != AutofocusMode.Off;
+        boolean disableContinuousFocus = ZXScanHelper.getAutofocusMode() != AutofocusMode.Auto;
 
         if (autofocus)
         {
