@@ -63,6 +63,7 @@ final class DecodeThread extends Thread
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
             decodeFormats = EnumSet.noneOf(BarcodeFormat.class);
             decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
+            decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
             hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
 
             if (characterSet != null)

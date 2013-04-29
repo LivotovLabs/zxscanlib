@@ -23,10 +23,9 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
 
-    <!--<com.google.zxing.client.android.ViewfinderView-->
-            <!--android:id="@+id/viewfinder_view"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--android:visibility="gone"/>--> a
+    <com.google.zxing.client.android.ViewfinderView
+            android:id="@+id/viewfinder_view"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
 
 </FrameLayout>
