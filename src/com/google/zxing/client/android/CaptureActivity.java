@@ -467,10 +467,16 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private void resetStatusView()
     {
+
     }
 
     public void drawViewfinder()
     {
+        ViewfinderView viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+        if (viewfinderView != null)
+        {
+            viewfinderView.setCameraManager(cameraManager);
+        }
     }
 
     public void onConfigurationChanged(final Configuration newConfig)
