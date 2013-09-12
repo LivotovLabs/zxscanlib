@@ -20,9 +20,14 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
+import android.view.WindowManager;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.client.android.camera.open.OpenCameraManager;
 
@@ -60,6 +65,7 @@ public final class CameraManager
      * clear the handler so it will only receive one message.
      */
     private final PreviewCallback previewCallback;
+    private int lastRotationAngle = -1;
 
     public CameraManager(Context context)
     {
@@ -74,26 +80,22 @@ public final class CameraManager
      * @param holder The surface object which the camera will draw preview frames into.
      * @throws IOException Indicates the camera driver failed to open.
      */
-    public synchronized void openDriver(SurfaceHolder holder) throws IOException
+    public synchronized void openDriver(Context ctx, SurfaceHolder holder) throws IOException
     {
         Camera theCamera = camera;
         if (theCamera == null)
         {
             theCamera = new OpenCameraManager().build().open();
 
-            try
-            {
-                theCamera.setDisplayOrientation(90);
-            } catch (Throwable err)
-            {
-            }
-
             if (theCamera == null)
             {
                 throw new IOException();
             }
+
             camera = theCamera;
+            setCameraOrientation();
         }
+
         theCamera.setPreviewDisplay(holder);
 
         if (!initialized)
@@ -197,6 +199,7 @@ public final class CameraManager
         {
             previewCallback.setHandler(handler, message);
             theCamera.setOneShotPreviewCallback(previewCallback);
+            setCameraOrientation();
         }
     }
 
@@ -328,11 +331,75 @@ public final class CameraManager
                                             rect.width(), rect.height(), false);
     }
 
-    public void setCameraOrientation(final int cameraOrientation)
+    public synchronized void forceSetCameraOrientation()
     {
-        if (camera != null)
+        if (Build.VERSION.SDK_INT > 7)
         {
-            camera.setDisplayOrientation(cameraOrientation);
+            lastRotationAngle = -1;
+            setCameraOrientation();
         }
+    }
+
+    public synchronized void setCameraOrientation()
+    {
+        if (camera != null && Build.VERSION.SDK_INT > 7)
+        {
+            try
+            {
+                WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                Display display = mWindowManager.getDefaultDisplay();
+
+                int angle = Surface.ROTATION_0;
+
+
+                if (lastRotationAngle == angle)
+                {
+                    return;
+                }
+
+                boolean tablet = isTablet();
+                angle = display.getRotation();
+
+                switch (angle)
+                {
+                    case Surface.ROTATION_0:
+                        camera.setDisplayOrientation(tablet ? 0 : 90);
+                        break;
+
+                    case Surface.ROTATION_90:
+                        camera.setDisplayOrientation(tablet ? 270 : 0);
+                        break;
+
+                    case Surface.ROTATION_180:
+                        camera.setDisplayOrientation(tablet ? 90 : 0);
+                        break;
+
+                    case Surface.ROTATION_270:
+                        camera.setDisplayOrientation(tablet ? 90 : 180);
+                        break;
+
+                }
+
+                lastRotationAngle = angle;
+            } catch (Throwable err)
+            {
+                err.printStackTrace();
+            }
+        }
+    }
+
+    private boolean isTablet()
+    {
+        WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = mWindowManager.getDefaultDisplay();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        display.getMetrics(displayMetrics);
+
+        int width = displayMetrics.widthPixels / displayMetrics.densityDpi;
+        int height = displayMetrics.heightPixels / displayMetrics.densityDpi;
+
+        double screenDiagonal = Math.sqrt(width * width + height * height);
+        return (screenDiagonal >= 6);
     }
 }

@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.google.zxing.client.android.common.executor.AsyncTaskExecInterface;
 import com.google.zxing.client.android.common.executor.AsyncTaskExecManager;
+import eu.livotov.zxscan.ZXScanHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ final class AutoFocusManager implements Camera.AutoFocusCallback
 
     private static final String TAG = AutoFocusManager.class.getSimpleName();
 
-    private static final long AUTO_FOCUS_INTERVAL_MS = 1000L;
+    private static final long AUTO_FOCUS_INTERVAL_MS = 2000L;
     private static final Collection<String> FOCUS_MODES_CALLING_AF;
 
     static
@@ -42,7 +43,7 @@ final class AutoFocusManager implements Camera.AutoFocusCallback
     }
 
     private boolean active;
-    private final boolean useAutoFocus;
+    private boolean useAutoFocus;
     private final Camera camera;
     private AutoFocusTask outstandingTask;
     private final AsyncTaskExecInterface taskExec;
@@ -52,8 +53,21 @@ final class AutoFocusManager implements Camera.AutoFocusCallback
         this.camera = camera;
         taskExec = new AsyncTaskExecManager().build();
         String currentFocusMode = camera.getParameters().getFocusMode();
-        //todo: control setting
-        useAutoFocus = true && FOCUS_MODES_CALLING_AF.contains(currentFocusMode);
+
+        switch (ZXScanHelper.getAutofocusMode())
+        {
+            case Auto:
+                useAutoFocus = true && FOCUS_MODES_CALLING_AF.contains(currentFocusMode);
+                break;
+
+            case On:
+                useAutoFocus = true;
+                break;
+
+            case Off:
+                useAutoFocus = false;
+        }
+
         Log.i(TAG, "Current focus mode '" + currentFocusMode + "'; use auto focus? " + useAutoFocus);
         start();
     }
