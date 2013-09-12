@@ -43,7 +43,7 @@ final class AutoFocusManager implements Camera.AutoFocusCallback
     }
 
     private boolean active;
-    private boolean useAutoFocus;
+    private boolean useAutoFocus = true;
     private final Camera camera;
     private AutoFocusTask outstandingTask;
     private final AsyncTaskExecInterface taskExec;

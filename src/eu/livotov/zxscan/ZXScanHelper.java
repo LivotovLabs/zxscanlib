@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.text.TextUtils;
 import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.Intents;
+import com.google.zxing.client.android.camera.FrontLightMode;
 
 import java.util.List;
 
@@ -23,10 +24,12 @@ public class ZXScanHelper
 
     private static int customScanLayout = 0;
     private static int customScanSound = 0;
+    private static boolean safeMode = false;
     private static boolean playSoundOnRead = true;
     private static boolean vibrateOnRead = true;
     private static boolean useExternalApplicationIfAvailable = false;
     private static boolean blockCameraRotation = true;
+    private static FrontLightMode frontLightMode = FrontLightMode.AUTO;
     private static AutofocusMode autofocusMode = AutofocusMode.On;
     private static ZXUserCallback userCallback;
 
@@ -124,6 +127,16 @@ public class ZXScanHelper
         return vibrateOnRead;
     }
 
+    public static boolean isSafeMode()
+    {
+        return safeMode;
+    }
+
+    public static void setSafeMode(final boolean safeMode)
+    {
+        ZXScanHelper.safeMode = safeMode;
+    }
+
     public static void setVibrateOnRead(final boolean vibrateOnRead)
     {
         ZXScanHelper.vibrateOnRead = vibrateOnRead;
@@ -147,5 +160,15 @@ public class ZXScanHelper
     public static void setBlockCameraRotation(final boolean blockCameraRotation)
     {
         ZXScanHelper.blockCameraRotation = blockCameraRotation;
+    }
+
+    public static FrontLightMode getFrontLightMode()
+    {
+        return frontLightMode;
+    }
+
+    public static void setFrontLightMode(final FrontLightMode frontLightMode)
+    {
+        ZXScanHelper.frontLightMode = frontLightMode;
     }
 }

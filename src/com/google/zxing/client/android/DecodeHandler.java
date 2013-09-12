@@ -26,6 +26,7 @@ import com.google.zxing.*;
 import com.google.zxing.common.HybridBinarizer;
 import eu.livotov.zxscan.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 final class DecodeHandler extends Handler
@@ -82,7 +83,7 @@ final class DecodeHandler extends Handler
             try
             {
                 rawResult = multiFormatReader.decodeWithState(bitmap);
-            } catch (Throwable re)
+            } catch (ReaderException re)
             {
                 // continue
             } finally
@@ -101,8 +102,7 @@ final class DecodeHandler extends Handler
             {
                 Message message = Message.obtain(handler, R.id.zx_decode_succeeded, rawResult);
                 Bundle bundle = new Bundle();
-                Bitmap grayscaleBitmap = toBitmap(source, source.renderThumbnail());
-                bundle.putParcelable(DecodeThread.BARCODE_BITMAP, grayscaleBitmap);
+                bundleThumbnail(source, bundle);
                 message.setData(bundle);
                 message.sendToTarget();
             }
@@ -116,13 +116,15 @@ final class DecodeHandler extends Handler
         }
     }
 
-    private static Bitmap toBitmap(LuminanceSource source, int[] pixels)
+    private static void bundleThumbnail(PlanarYUVLuminanceSource source, Bundle bundle)
     {
-        int width = source.getWidth();
-        int height = source.getHeight();
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-        return bitmap;
+        int[] pixels = source.renderThumbnail();
+        int width = source.getThumbnailWidth();
+        int height = source.getThumbnailHeight();
+        Bitmap bitmap = Bitmap.createBitmap(pixels, 0, width, width, height, Bitmap.Config.ARGB_8888);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
+        bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
     }
 
 }

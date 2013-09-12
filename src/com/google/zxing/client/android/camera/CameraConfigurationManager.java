@@ -24,8 +24,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-import com.google.zxing.client.android.camera.exposure.ExposureInterface;
-import com.google.zxing.client.android.camera.exposure.ExposureManager;
 import eu.livotov.zxscan.AutofocusMode;
 import eu.livotov.zxscan.ZXScanHelper;
 
@@ -44,17 +42,15 @@ final class CameraConfigurationManager
     // below will still select the default (presumably 320x240) size for these. This prevents
     // accidental selection of very low resolution on some devices.
     private static final int MIN_PREVIEW_PIXELS = 470 * 320; // normal screen
-    private static final int MAX_PREVIEW_PIXELS = 1280 * 720;
+    private static final int MAX_PREVIEW_PIXELS = 1280 * 800;
 
     private final Context context;
     private Point screenResolution;
     private Point cameraResolution;
-    private final ExposureInterface exposure;
 
     CameraConfigurationManager(Context context)
     {
         this.context = context;
-        exposure = new ExposureManager().build();
     }
 
     /**
@@ -94,7 +90,7 @@ final class CameraConfigurationManager
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        initializeTorch(parameters, prefs);
+        initializeTorch(parameters, prefs, ZXScanHelper.isSafeMode());
         String focusMode = null;
 
         //todo: control those settings
@@ -141,21 +137,35 @@ final class CameraConfigurationManager
         return screenResolution;
     }
 
+    boolean getTorchState(Camera camera)
+    {
+        if (camera != null)
+        {
+            Camera.Parameters parameters = camera.getParameters();
+            if (parameters != null)
+            {
+                String flashMode = camera.getParameters().getFlashMode();
+                return flashMode != null &&
+                               (Camera.Parameters.FLASH_MODE_ON.equals(flashMode) ||
+                                        Camera.Parameters.FLASH_MODE_TORCH.equals(flashMode));
+            }
+        }
+        return false;
+    }
+
     void setTorch(Camera camera, boolean newSetting)
     {
         Camera.Parameters parameters = camera.getParameters();
-        doSetTorch(parameters, newSetting);
+        doSetTorch(parameters, newSetting, false);
         camera.setParameters(parameters);
     }
 
-    private void initializeTorch(Camera.Parameters parameters, SharedPreferences prefs)
+    private void initializeTorch(Camera.Parameters parameters, SharedPreferences prefs, boolean safeMode)
     {
-        //todo: control setting
-        boolean useFrontLight = false;
-        doSetTorch(parameters, useFrontLight);
+        doSetTorch(parameters, ZXScanHelper.getFrontLightMode() == FrontLightMode.ON, safeMode);
     }
 
-    private void doSetTorch(Camera.Parameters parameters, boolean newSetting)
+    private void doSetTorch(Camera.Parameters parameters, boolean newSetting, boolean safeMode)
     {
         String flashMode;
         if (newSetting)
@@ -173,14 +183,30 @@ final class CameraConfigurationManager
             parameters.setFlashMode(flashMode);
         }
 
+    /*
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    if (!prefs.getBoolean(PreferencesActivity.KEY_DISABLE_EXPOSURE, false)) {
+      if (!safeMode) {
+        ExposureInterface exposure = new ExposureManager().build();
         exposure.setExposure(parameters, newSetting);
+      }
+    }
+     */
     }
 
     private Point findBestPreviewSizeValue(Camera.Parameters parameters, Point screenResolution)
     {
 
+        List<Camera.Size> rawSupportedSizes = parameters.getSupportedPreviewSizes();
+        if (rawSupportedSizes == null)
+        {
+            Log.w(TAG, "Device returned no supported preview sizes; using default");
+            Camera.Size defaultSize = parameters.getPreviewSize();
+            return new Point(defaultSize.width, defaultSize.height);
+        }
+
         // Sort by size, descending
-        List<Camera.Size> supportedPreviewSizes = new ArrayList<Camera.Size>(parameters.getSupportedPreviewSizes());
+        List<Camera.Size> supportedPreviewSizes = new ArrayList<Camera.Size>(rawSupportedSizes);
         Collections.sort(supportedPreviewSizes, new Comparator<Camera.Size>()
         {
             @Override
