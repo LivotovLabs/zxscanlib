@@ -101,7 +101,7 @@ final class DecodeHandler extends Handler
             {
                 Message message = Message.obtain(handler, R.id.zx_decode_succeeded, rawResult);
                 Bundle bundle = new Bundle();
-                Bitmap grayscaleBitmap = toBitmap(source, source.renderCroppedGreyscaleBitmap());
+                Bitmap grayscaleBitmap = toBitmap(source, source.renderThumbnail());
                 bundle.putParcelable(DecodeThread.BARCODE_BITMAP, grayscaleBitmap);
                 message.setData(bundle);
                 message.sendToTarget();

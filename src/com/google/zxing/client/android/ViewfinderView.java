@@ -149,8 +149,8 @@ public final class ViewfinderView extends View
                     for (ResultPoint point : currentPossible)
                     {
                         canvas.drawCircle(frameLeft + (int) (point.getX() * scaleX),
-                                frameTop + (int) (point.getY() * scaleY),
-                                POINT_SIZE, paint);
+                                          frameTop + (int) (point.getY() * scaleY),
+                                          POINT_SIZE, paint);
                     }
                 }
             }
@@ -164,8 +164,8 @@ public final class ViewfinderView extends View
                     for (ResultPoint point : currentLast)
                     {
                         canvas.drawCircle(frameLeft + (int) (point.getX() * scaleX),
-                                frameTop + (int) (point.getY() * scaleY),
-                                radius, paint);
+                                          frameTop + (int) (point.getY() * scaleY),
+                                          radius, paint);
                     }
                 }
             }
@@ -173,10 +173,10 @@ public final class ViewfinderView extends View
             // Request another update at the animation interval, but only repaint the laser line,
             // not the entire viewfinder mask.
             postInvalidateDelayed(ANIMATION_DELAY,
-                    frame.left - POINT_SIZE,
-                    frame.top - POINT_SIZE,
-                    frame.right + POINT_SIZE,
-                    frame.bottom + POINT_SIZE);
+                                  frame.left - POINT_SIZE,
+                                  frame.top - POINT_SIZE,
+                                  frame.right + POINT_SIZE,
+                                  frame.bottom + POINT_SIZE);
         }
     }
 

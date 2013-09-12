@@ -325,8 +325,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 paint.setStrokeWidth(4.0f);
                 drawLine(canvas, paint, points[0], points[1]);
             } else if (points.length == 4 &&
-                    (rawResult.getBarcodeFormat() == BarcodeFormat.UPC_A ||
-                            rawResult.getBarcodeFormat() == BarcodeFormat.EAN_13))
+                                           (rawResult.getBarcodeFormat() == BarcodeFormat.UPC_A ||
+                                                    rawResult.getBarcodeFormat() == BarcodeFormat.EAN_13))
             {
                 // Hacky special case -- draw two lines, for the barcode and metadata
                 drawLine(canvas, paint, points[0], points[1]);
@@ -369,7 +369,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             if (metadata.containsKey(ResultMetadataType.UPC_EAN_EXTENSION))
             {
                 intent.putExtra(Intents.Scan.RESULT_UPC_EAN_EXTENSION,
-                        metadata.get(ResultMetadataType.UPC_EAN_EXTENSION).toString());
+                                metadata.get(ResultMetadataType.UPC_EAN_EXTENSION).toString());
             }
 
             Integer orientation = (Integer) metadata.get(ResultMetadataType.ORIENTATION);
