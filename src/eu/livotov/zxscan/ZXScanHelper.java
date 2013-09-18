@@ -32,6 +32,7 @@ public class ZXScanHelper
     private static FrontLightMode frontLightMode = FrontLightMode.AUTO;
     private static AutofocusMode autofocusMode = AutofocusMode.On;
     private static ZXUserCallback userCallback;
+    private static Class captureActivityClass;
 
     public final static void scan(Activity ctx, int requestCode)
     {
@@ -39,7 +40,7 @@ public class ZXScanHelper
 
         if (scanIntent == null)
         {
-            scanIntent = new Intent(ctx, CaptureActivity.class);
+            scanIntent = new Intent(ctx, captureActivityClass != null ? captureActivityClass : CaptureActivity.class);
         }
 
         ctx.startActivityForResult(scanIntent, requestCode);
@@ -160,6 +161,12 @@ public class ZXScanHelper
     public static void setBlockCameraRotation(final boolean blockCameraRotation)
     {
         ZXScanHelper.blockCameraRotation = blockCameraRotation;
+    }
+
+
+    public static void setCustomActivityClass(Class<? extends CaptureActivity> captureActivityClass)
+    {
+        ZXScanHelper.captureActivityClass = captureActivityClass;
     }
 
     public static FrontLightMode getFrontLightMode()
