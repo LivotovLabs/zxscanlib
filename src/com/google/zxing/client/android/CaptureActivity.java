@@ -65,7 +65,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback
     private String characterSet;
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
-    private ViewfinderView viewfinderView;
 
     public Handler getHandler()
     {
@@ -98,15 +97,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback
         if (ZXScanHelper.getUserCallback() != null)
         {
             ZXScanHelper.getUserCallback().onScannerActivityCreated(this);
-        }
-    }
-
-    private void initViewFinder()
-    {
-        if (viewfinderView != null && cameraManager != null)
-        {
-            viewfinderView.setCameraManager(cameraManager);
-            viewfinderView.bringToFront();
         }
     }
 
@@ -147,7 +137,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback
         {
             ZXScanHelper.getUserCallback().onScannerActivityResumed(this);
         }
-        initViewFinder();
     }
 
     @Override
