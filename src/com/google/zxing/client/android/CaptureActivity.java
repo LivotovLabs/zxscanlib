@@ -99,9 +99,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback
         {
             ZXScanHelper.getUserCallback().onScannerActivityCreated(this);
         }
-
-        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        initViewFinder();
     }
 
     private void initViewFinder()
@@ -472,11 +469,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback
 
     public void drawViewfinder()
     {
-        ViewfinderView viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        if (viewfinderView != null)
-        {
-            viewfinderView.setCameraManager(cameraManager);
-        }
     }
 
     public void onConfigurationChanged(final Configuration newConfig)
