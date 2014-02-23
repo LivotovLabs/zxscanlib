@@ -72,6 +72,11 @@ public class ZXScanHelper
     {
         return resultData != null ? resultData.getStringExtra(Intents.Scan.RESULT) : null;
     }
+    
+    public final static String getCodeFormat(Intent resultData)
+	{
+		return resultData != null ? resultData.getStringExtra(Intents.Scan.RESULT_FORMAT) : null;
+	}
 
     public static void setCustomScanLayout(final int customScanLayoutRes)
     {
