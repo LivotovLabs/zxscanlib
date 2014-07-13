@@ -1,16 +1,18 @@
 package eu.livotov.zxscan;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+
 import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.Intents;
 import com.google.zxing.client.android.camera.FrontLightMode;
-
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,18 +34,32 @@ public class ZXScanHelper
     private static FrontLightMode frontLightMode = FrontLightMode.AUTO;
     private static AutofocusMode autofocusMode = AutofocusMode.On;
     private static ZXUserCallback userCallback;
-    private static Class captureActivityClass;
+    private static Class<? extends CaptureActivity> captureActivityClass;
 
     public final static void scan(Activity ctx, int requestCode)
     {
-        Intent scanIntent = useExternalApplicationIfAvailable ? getExternalApplicationIntent(ctx) : null;
+    	Intent scanIntent = getScanIntent(ctx);
+    	
+        ctx.startActivityForResult(scanIntent, requestCode);
+    }
+    
+    public final static void scan(Fragment frag, int requestCode) 
+    {
+    	Intent scanIntent = getScanIntent(frag.getActivity());
+    	
+    	frag.startActivityForResult(scanIntent, requestCode);
+    }
+    
+    private final static Intent getScanIntent(Activity ctx) 
+    {
+    	Intent scanIntent = useExternalApplicationIfAvailable ? getExternalApplicationIntent(ctx) : null;
 
         if (scanIntent == null)
         {
             scanIntent = new Intent(ctx, captureActivityClass != null ? captureActivityClass : CaptureActivity.class);
         }
-
-        ctx.startActivityForResult(scanIntent, requestCode);
+        
+        return scanIntent;
     }
 
     private static Intent getExternalApplicationIntent(final Context ctx)
