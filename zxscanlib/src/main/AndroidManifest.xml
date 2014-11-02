@@ -17,22 +17,5 @@
     <uses-feature android:name="android.hardware.screen.landscape" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
-    <application android:label="zxscanlib">
-
-        <activity
-                android:name="com.google.zxing.client.android.CaptureActivity"
-                android:clearTaskOnLaunch="true"
-                android:stateNotNeeded="true"
-                android:configChanges="orientation|keyboardHidden"
-                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                android:windowSoftInputMode="stateAlwaysHidden">
-
-            <intent-filter>
-                <action android:name="eu.livotov.zxscan.SCAN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-        </activity>
-
-    </application>
+    <application android:label="zxscanlib"/>
 </manifest>

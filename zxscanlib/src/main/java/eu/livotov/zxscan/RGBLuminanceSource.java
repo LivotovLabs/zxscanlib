@@ -1,4 +1,4 @@
-package com.google.zxing.extra;
+package eu.livotov.zxscan;
 
 /**
  * Created by IntelliJ IDEA.
