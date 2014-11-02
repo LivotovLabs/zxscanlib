@@ -50,7 +50,7 @@ import java.util.Map;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class CaptureActivity extends Activity implements SurfaceHolder.Callback
+public class CaptureActivity extends Activity implements SurfaceHolder.Callback
 {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
@@ -65,14 +65,13 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private String characterSet;
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
-    private ViewfinderView viewfinderView;
 
     public Handler getHandler()
     {
         return handler;
     }
 
-    CameraManager getCameraManager()
+    protected CameraManager getCameraManager()
     {
         return cameraManager;
     }
@@ -98,18 +97,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         if (ZXScanHelper.getUserCallback() != null)
         {
             ZXScanHelper.getUserCallback().onScannerActivityCreated(this);
-        }
-
-        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        initViewFinder();
-    }
-
-    private void initViewFinder()
-    {
-        if (viewfinderView != null && cameraManager != null)
-        {
-            viewfinderView.setCameraManager(cameraManager);
-            viewfinderView.bringToFront();
         }
     }
 
@@ -150,7 +137,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         {
             ZXScanHelper.getUserCallback().onScannerActivityResumed(this);
         }
-        initViewFinder();
     }
 
     @Override
@@ -325,8 +311,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 paint.setStrokeWidth(4.0f);
                 drawLine(canvas, paint, points[0], points[1]);
             } else if (points.length == 4 &&
-                               (rawResult.getBarcodeFormat() == BarcodeFormat.UPC_A ||
-                                        rawResult.getBarcodeFormat() == BarcodeFormat.EAN_13))
+                    (rawResult.getBarcodeFormat() == BarcodeFormat.UPC_A ||
+                            rawResult.getBarcodeFormat() == BarcodeFormat.EAN_13))
             {
                 // Hacky special case -- draw two lines, for the barcode and metadata
                 drawLine(canvas, paint, points[0], points[1]);
@@ -369,7 +355,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             if (metadata.containsKey(ResultMetadataType.UPC_EAN_EXTENSION))
             {
                 intent.putExtra(Intents.Scan.RESULT_UPC_EAN_EXTENSION,
-                                metadata.get(ResultMetadataType.UPC_EAN_EXTENSION).toString());
+                        metadata.get(ResultMetadataType.UPC_EAN_EXTENSION).toString());
             }
 
             Integer orientation = (Integer) metadata.get(ResultMetadataType.ORIENTATION);
@@ -472,11 +458,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     public void drawViewfinder()
     {
-        ViewfinderView viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        if (viewfinderView != null)
-        {
-            viewfinderView.setCameraManager(cameraManager);
-        }
     }
 
     public void onConfigurationChanged(final Configuration newConfig)
