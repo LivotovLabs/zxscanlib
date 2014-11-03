@@ -9,6 +9,13 @@ The library uses ZXing (will also support ZBar soon) as core barcodes decoder an
 and is very lightweight, customizable and extremely easy to embed into the application.
 
 
+Status
+------
+
+Official status is: **UNSTABLE**. This is initial phase of v2 development - the code is not too clean and any apis
+are not final and may change at any time without prior notice.
+
+
 Getting It
 ----------
 
