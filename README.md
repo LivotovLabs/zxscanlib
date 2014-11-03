@@ -1,5 +1,5 @@
-ZXScanLib for Android v2.0
-==========================
+ZXScanLib for Android v2
+========================
 
 Android library for adding barcode scanning functionality into any Android app with ease.
 
@@ -7,6 +7,30 @@ Android library for adding barcode scanning functionality into any Android app w
 
 The library uses ZXing (will also support ZBar soon) as core barcodes decoder and our own camera streaming library
 and is very lightweight, customizable and extremely easy to embed into the application.
+
+
+Getting It
+----------
+
+The latest development version is 2.0.0-SNAPSHOT , latest stable version: n/a
+
+Please note, that versions 0.9.x and 1.x are from previous generation of this library, has completely different api and obsolete.
+
+Gradle:
+
+```groovy
+
+repositories {
+    ...
+    maven { url 'http://maven.livotovlabs.pro/content/groups/public' }
+    ...
+}
+
+compile ('eu.livotov.labs:zxscanlib:2.0.0-SNAPSHOT@aar') {transitive=true}
+
+```
+
+Note, that ZXScanLib depends internally on CAMView project, so ```transitive=true``` statement is required in order to compile.
 
 
 
@@ -82,30 +106,6 @@ Note, that your layout **MUST** contain at least the ```CAMView``` object defini
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 ```
-
-Download
---------
-
-The latest development version is 2.0.0-SNAPSHOT , latest stable version: n/a
-
-Please note, that versions 0.9.x and 1.x are from previous generation of this library, has completely different api and obsolete.
-
-Gradle:
-
-```groovy
-
-repositories {
-    ...
-    maven { url 'http://maven.livotovlabs.pro/content/groups/public' }
-    ...
-}
-
-compile ('eu.livotov.labs:zxscanlib:2.0.0-SNAPSHOT@aar') {transitive=true}
-
-```
-
-Note, that ZXScanLib depends internally on CAMView project, so ```transitive=true``` statement is required in order to compile.
-
 
 
 
