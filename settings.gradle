@@ -1,1 +1,1 @@
-include ':zxscanlib'
+include ':zxscanlib', ':demo-app'

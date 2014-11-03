@@ -1,4 +1,4 @@
-package eu.livotov.zxscan;
+package eu.livotov.zxscan.decoder.zxing;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,17 +20,17 @@ import java.io.FileNotFoundException;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class RGBLuminanceSource extends LuminanceSource
+public final class ZXRGBLuminanceSource extends LuminanceSource
 {
 
     private final byte[] luminances;
 
-    public RGBLuminanceSource(String path) throws FileNotFoundException
+    public ZXRGBLuminanceSource(String path) throws FileNotFoundException
     {
         this(loadBitmap(path));
     }
 
-    public RGBLuminanceSource(Bitmap bitmap)
+    public ZXRGBLuminanceSource(Bitmap bitmap)
     {
         super(bitmap.getWidth(), bitmap.getHeight());
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="eu.livotov.zxscan.zxscandemoapp">
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <application
+            tools:replace="android:icon,android:theme,android:label"
+            android:allowBackup="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/demo_app_name"
+            android:theme="@style/AppTheme">
+        <activity
+                android:name="eu.livotov.zxscan.zxscandemoapp.MainActivity"
+                android:label="@string/demo_app_name">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <activity android:name=".ScanActivity" android:configChanges="orientation|screenSize"/>
+
+    </application>
+
+</manifest>
