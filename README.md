@@ -3,42 +3,17 @@ ZXScanLib for Android v2
 
 Android library for adding barcode scanning functionality into any Android app with ease.
 
-![Screenshot](zxscanlibSampleScreenshot.png)
-
-The library uses ZXing (will also support ZBar soon) as core barcodes decoder and our own camera streaming library
+The library uses ZXing and ZBar (at your choice) as core barcodes decoding engines and our own camera streaming library
 and is very lightweight, customizable and extremely easy to embed into the application.
 
+![Screenshot](zxscanlibSampleScreenshot.png)
 
 Status
 ------
 
-Official status is: **UNSTABLE**. This is initial phase of v2 development - the code is not too clean and any apis
-are not final and may change at any time without prior notice.
+Official status is: **UNSTABLE**. 
 
-
-Getting It
-----------
-
-The latest development version is 2.0.0-SNAPSHOT , latest stable version: n/a
-
-Please note, that versions 0.9.x and 1.x are from previous generation of this library, has completely different api and obsolete.
-
-Gradle:
-
-```groovy
-
-repositories {
-    ...
-    maven { url 'http://maven.livotovlabs.pro/content/groups/public' }
-    ...
-}
-
-compile ('eu.livotov.labs:zxscanlib:2.0.0-SNAPSHOT@aar') {transitive=true}
-
-```
-
-Note, that ZXScanLib depends internally on CAMView project, so ```transitive=true``` statement is required in order to compile.
-
+This is initial phase of v2 development - the code is not clean and any apis are not final and may change at any time without prior notice.
 
 
 Usage
@@ -78,6 +53,48 @@ That't it ! Alternatively you may operate with the ScannerFragment instead. The 
 starts and stops scanner automatically when fragment is resumed/paused.
 
 See also the simple demo application that is included.
+
+
+Known Issues
+------------
+
+- Currently scanner tries to recognize all supported barcodes. Option to try only specified types will be added shortly.
+- With ZXing engine (default), 1D barcodes are read when the barcode is placed vertically. This should be corrected later (if possible)
+- ZBar engine is not yet available
+
+
+Getting It
+----------
+
+ZXScanLib is available from maven repository:
+
+- Maven repository: *http://maven.livotovlabs.pro/content/groups/public*
+- Group name: *eu.livotov.labs*
+- Artifact ID: *zxscanlib*
+
+Available versions:
+
+- Latest development snapshot: *2.0.0-SNAPSHOT*
+- Latest stable version: *n/a*
+- Previous generation version: *0.9.1*
+
+*Please note that versions 0.9.x and 1.x are from previous generation of this library - they are completely different in api and obsolete.*
+
+Gradle:
+
+```groovy
+
+repositories {
+    ...
+    maven { url 'http://maven.livotovlabs.pro/content/groups/public' }
+    ...
+}
+
+compile ('eu.livotov.labs:zxscanlib:<VERSION_NUMBER>@aar') {transitive=true}
+
+```
+
+Note, that ZXScanLib depends internally on CAMView project, so ```transitive=true``` statement is required in order to compile.
 
 
 Tweaking The Scanner
