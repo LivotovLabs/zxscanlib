@@ -143,6 +143,14 @@ We're always happy for external help and any contributions !
 internally in ZXScanLib for streaming and capturing live data from the device camera.
 
 
+Credits
+-------
+
+Thanks ZXing and ZBar for core decoding engines that are used to decode captured bitmaps:
+
+- The ZXing project: https://github.com/zxing/zxing
+- The ZBar Android SDK: http://sourceforge.net/projects/zbar/files/AndroidSDK/
+
 
 License
 -------
