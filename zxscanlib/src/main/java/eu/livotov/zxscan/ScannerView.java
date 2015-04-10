@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import eu.livotov.labs.android.camview.CAMView;
 import eu.livotov.zxscan.decoder.BarcodeDecoder;
 import eu.livotov.zxscan.decoder.zxing.ZXDecoder;
@@ -33,6 +34,21 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     {
         super(context);
         initUI();
+    }
+
+    protected void initUI()
+    {
+        final View root = LayoutInflater.from(getContext()).inflate(getScannerLayoutResource(), this);
+        camera = (CAMView) root.findViewById(R.id.zxscanlib_camera);
+        hud = (ImageView) root.findViewById(R.id.cameraHud);
+        camera.setCamViewListener(this);
+        decoder = new ZXDecoder();
+        soundPlayer = new SoundPlayer(getContext());
+    }
+
+    protected int getScannerLayoutResource()
+    {
+        return R.layout.view_scanner;
     }
 
     public ScannerView(final Context context, final AttributeSet attrs)
@@ -94,41 +110,42 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         this.playSound = playSound;
     }
 
-    public void setHudVisible(boolean visible)
-    {
-        if (hud!=null)
-        {
-            hud.setVisibility(visible ? VISIBLE : INVISIBLE);
-        }
-    }
-
     public void setHudImageResource(int res)
     {
-        if (hud!=null)
+        if (hud != null)
         {
             hud.setBackgroundResource(res);
             setHudVisible(res != 0);
         }
     }
 
-    protected int getScannerLayoutResource()
+    public void setHudVisible(boolean visible)
     {
-        return R.layout.view_scanner;
+        if (hud != null)
+        {
+            hud.setVisibility(visible ? VISIBLE : INVISIBLE);
+        }
     }
 
-    protected void initUI()
+    public void onCameraReady(Camera camera)
     {
-        final View root = LayoutInflater.from(getContext()).inflate(getScannerLayoutResource(), this);
-        camera = (CAMView) root.findViewById(R.id.zxscanlib_camera);
-        hud = (ImageView) root.findViewById(R.id.cameraHud);
-        camera.setCamViewListener(this);
-        decoder = new ZXDecoder();
-        soundPlayer = new SoundPlayer(getContext());
+        if (scannerViewEventListener != null)
+        {
+            scannerViewEventListener.onScannerReady();
+        }
+    }
+
+    public void onCameraError(final int err, final Camera camera)
+    {
+        if (scannerViewEventListener != null)
+        {
+            scannerViewEventListener.onScannerFailure(err);
+        }
     }
 
     public void onPreviewData(final byte[] bytes, final int i, final Camera.Size size)
     {
-        if (scannerViewEventListener!=null)
+        if (scannerViewEventListener != null)
         {
             final String data = decoder.decode(bytes, size.width, size.height);
             if (!TextUtils.isEmpty(data))
@@ -143,14 +160,18 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 
     private void beep()
     {
-        if (playSound && scannerSoundAudioResource!=0)
+        if (playSound && scannerSoundAudioResource != 0)
         {
-            soundPlayer.playRawResource(scannerSoundAudioResource,false);
+            soundPlayer.playRawResource(scannerSoundAudioResource, false);
         }
     }
 
     public interface ScannerViewEventListener
     {
+        void onScannerReady();
+
+        void onScannerFailure(int cameraError);
+
         boolean onCodeScanned(final String data);
     }
 }

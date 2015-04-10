@@ -20,6 +20,9 @@ public class SoundPlayer implements MediaPlayer.OnPreparedListener
         initPlayer();
     }
 
+    private synchronized void initPlayer()
+    {
+    }
 
     public void playRawResource(int rawResource, boolean loop)
     {
@@ -32,7 +35,8 @@ public class SoundPlayer implements MediaPlayer.OnPreparedListener
                 mPlayer.setLooping(loop);
             }
             mPlayer.start();
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Log.e(getClass().getSimpleName(), "Could not play audio file: " + ex.getMessage());
             mPlayer = null;
@@ -52,15 +56,12 @@ public class SoundPlayer implements MediaPlayer.OnPreparedListener
 
                 mPlayer.release();
                 mPlayer = null;
-            } catch (Throwable err)
+            }
+            catch (Throwable err)
             {
                 Log.e(getClass().getSimpleName(), "EXCEPTION: " + err.getMessage());
             }
         }
-    }
-
-    private synchronized void initPlayer()
-    {
     }
 
     @Override
@@ -69,7 +70,8 @@ public class SoundPlayer implements MediaPlayer.OnPreparedListener
         try
         {
             mp.start();
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             stop();
         }

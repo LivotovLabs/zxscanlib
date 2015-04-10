@@ -3,44 +3,53 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
-              android:paddingBottom="@dimen/activity_vertical_margin"
               tools:context=".MainActivity$PlaceholderFragment">
 
     <Button
-            android:id="@+id/btnTestInActivity"
-            android:text="@string/test_in_fragment"
-            android:layout_weight="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        android:id="@+id/btnTestInActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="@string/test_in_fragment"/>
 
     <Button
-            android:id="@+id/btnTestInView"
-            android:text="@string/test_in_view"
-            android:layout_weight="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        android:id="@+id/btnTestInView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="@string/test_in_view"/>
 
     <FrameLayout
-            android:id="@+id/scannerRoot"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:visibility="invisible"
-            android:layout_weight="1">
+        android:id="@+id/scannerRoot"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:visibility="invisible">
 
         <eu.livotov.zxscan.ScannerView
-                android:id="@+id/scanner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            android:id="@+id/scanner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
         <Button
-                android:id="@+id/btnStopScanner"
-                android:text="@string/close_scanner"
-                android:layout_gravity="right|bottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            android:id="@+id/btnStopScanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:text="@string/close_scanner"/>
+
+        <TextView
+            android:id="@+id/waitLabel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:text="@string/please_wait"/>
 
     </FrameLayout>
 </LinearLayout>

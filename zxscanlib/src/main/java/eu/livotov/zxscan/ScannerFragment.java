@@ -1,13 +1,10 @@
 package eu.livotov.zxscan;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import eu.livotov.zxscan.R;
-import eu.livotov.zxscan.ScannerView;
 
 /**
  * (c) Livotov Labs Ltd. 2012
@@ -19,8 +16,7 @@ public class ScannerFragment extends Fragment implements ScannerView.ScannerView
     protected ScannerView.ScannerViewEventListener scannerViewEventListener;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_scanner, container, false);
         return rootView;
@@ -29,18 +25,8 @@ public class ScannerFragment extends Fragment implements ScannerView.ScannerView
     public void onViewCreated(final View view, final Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        scanner = (ScannerView)view.findViewById(R.id.zxscanlib_camera);
+        scanner = (ScannerView) view.findViewById(R.id.zxscanlib_camera);
         scanner.setScannerViewEventListener(this);
-    }
-
-    public ScannerView.ScannerViewEventListener getScannerViewEventListener()
-    {
-        return scannerViewEventListener;
-    }
-
-    public void setScannerViewEventListener(final ScannerView.ScannerViewEventListener scannerViewEventListener)
-    {
-        this.scannerViewEventListener = scannerViewEventListener;
     }
 
     public void onResume()
@@ -55,14 +41,36 @@ public class ScannerFragment extends Fragment implements ScannerView.ScannerView
         super.onPause();
     }
 
+    public ScannerView.ScannerViewEventListener getScannerViewEventListener()
+    {
+        return scannerViewEventListener;
+    }
+
+    public void setScannerViewEventListener(final ScannerView.ScannerViewEventListener scannerViewEventListener)
+    {
+        this.scannerViewEventListener = scannerViewEventListener;
+    }
+
     public ScannerView getScanner()
     {
         return scanner;
     }
 
+    @Override
+    public void onScannerReady()
+    {
+
+    }
+
+    @Override
+    public void onScannerFailure(int cameraError)
+    {
+
+    }
+
     public boolean onCodeScanned(final String data)
     {
-        if (scannerViewEventListener!=null)
+        if (scannerViewEventListener != null)
         {
             scannerViewEventListener.onCodeScanned(data);
         }

@@ -3,8 +3,9 @@ package eu.livotov.zxscan.zxscandemoapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import eu.livotov.zxscan.ScannerView;
+
 import eu.livotov.zxscan.ScannerFragment;
+import eu.livotov.zxscan.ScannerView;
 
 
 public class ScanActivity extends ActionBarActivity implements ScannerView.ScannerViewEventListener
@@ -30,6 +31,18 @@ public class ScanActivity extends ActionBarActivity implements ScannerView.Scann
         }
     }
 
+
+    @Override
+    public void onScannerReady()
+    {
+
+    }
+
+    @Override
+    public void onScannerFailure(int cameraError)
+    {
+
+    }
 
     public boolean onCodeScanned(final String data)
     {

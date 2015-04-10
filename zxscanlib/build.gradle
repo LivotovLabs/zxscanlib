@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13.0'
+        classpath 'com.android.tools.build:gradle:1.1.0'
     }
 }
 apply plugin: 'com.android.library'
@@ -18,15 +18,14 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "eu.livotov.zxscan"
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -39,7 +38,7 @@ configurations.all {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.0'
-    compile 'eu.livotov.labs:camview:1.0.0@aar'
+    compile 'eu.livotov.labs:camview:1.0.2-SNAPSHOT@aar'
 }
 
-apply from: '../maven-push.gradle'
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'

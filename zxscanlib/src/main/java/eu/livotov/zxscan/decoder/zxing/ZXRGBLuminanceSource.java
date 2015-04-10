@@ -10,6 +10,7 @@ package eu.livotov.zxscan.decoder.zxing;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import com.google.zxing.LuminanceSource;
 
 import java.io.FileNotFoundException;
@@ -55,13 +56,24 @@ public final class ZXRGBLuminanceSource extends LuminanceSource
                 {
                     // Image is already greyscale, so pick any channel.
                     luminances[offset + x] = (byte) r;
-                } else
+                }
+                else
                 {
                     // Calculate luminance cheaply, favoring green.
                     luminances[offset + x] = (byte) ((r + g + g + b) >> 2);
                 }
             }
         }
+    }
+
+    private static Bitmap loadBitmap(String path) throws FileNotFoundException
+    {
+        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        if (bitmap == null)
+        {
+            throw new FileNotFoundException("Couldn't open " + path);
+        }
+        return bitmap;
     }
 
     public byte[] getRow(int y, byte[] row)
@@ -85,16 +97,6 @@ public final class ZXRGBLuminanceSource extends LuminanceSource
     public byte[] getMatrix()
     {
         return luminances;
-    }
-
-    private static Bitmap loadBitmap(String path) throws FileNotFoundException
-    {
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
-        if (bitmap == null)
-        {
-            throw new FileNotFoundException("Couldn't open " + path);
-        }
-        return bitmap;
     }
 
 }

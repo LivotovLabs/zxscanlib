@@ -12,7 +12,7 @@ and is very lightweight, customizable and extremely easy to embed into the appli
 Status
 ------
 
-Official status is: **UNSTABLE**. This is initial phase of v2 development - the code is not too clean and any apis
+Official version/status is: 2.0.0-SNAPSHOT / **UNSTABLE**. This is initial phase of v2 development - the code is not too clean and any apis
 are not final and may change at any time without prior notice.
 
 
