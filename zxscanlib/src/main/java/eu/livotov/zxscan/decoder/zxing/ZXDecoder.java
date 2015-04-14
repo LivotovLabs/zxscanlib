@@ -41,7 +41,7 @@ public class ZXDecoder implements BarcodeDecoder
 
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
         hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
-        //hints.put(DecodeHintType.TRY_HARDER, true);
+        hints.put(DecodeHintType.TRY_HARDER, true);
 
         reader.setHints(hints);
     }

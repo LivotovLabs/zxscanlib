@@ -8,12 +8,6 @@ and is very lightweight, customizable and extremely easy to embed into the appli
 
 ![Screenshot](zxscanlibSampleScreenshot.png)
 
-Status
-------
-
-Official status is: **UNSTABLE**. 
-
-This is initial phase of v2 development - the code is not clean and any apis are not final and may change at any time without prior notice.
 
 
 Usage
@@ -74,9 +68,8 @@ ZXScanLib is available from maven repository:
 
 Available versions:
 
-- Latest development snapshot: *2.0.0-SNAPSHOT*
-- Latest stable version: *n/a*
-- Previous generation version: *0.9.1*
+- Latest release version: 2.0.0
+- Latest development snapshot: n/a
 
 *Please note that versions 0.9.x and 1.x are from previous generation of this library - they are completely different in api and obsolete.*
 
@@ -90,7 +83,7 @@ repositories {
     ...
 }
 
-compile ('eu.livotov.labs:zxscanlib:<VERSION_NUMBER>@aar') {transitive=true}
+compile ('eu.livotov.labs:zxscanlib:2.0.0@aar') {transitive=true}
 
 ```
 
