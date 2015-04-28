@@ -25,7 +25,7 @@ public class ScannerFragment extends Fragment implements ScannerView.ScannerView
     public void onViewCreated(final View view, final Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        scanner = (ScannerView) view.findViewById(R.id.zxscanlib_camera);
+        scanner = (ScannerView) view.findViewById(R.id.scanner);
         scanner.setScannerViewEventListener(this);
     }
 
