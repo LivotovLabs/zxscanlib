@@ -69,7 +69,7 @@ ZXScanLib is available from maven repository:
 Available versions:
 
 - Latest release version: 2.0.1
-- Latest development snapshot: 2.0.2-SNAPSHOT
+- Latest development snapshot: 2.1.0-SNAPSHOT
 
 *Please note that versions 0.9.x and 1.x are from previous generation of this library - they are completely different in api and obsolete.*
 
