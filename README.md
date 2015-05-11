@@ -68,8 +68,8 @@ ZXScanLib is available from maven repository:
 
 Available versions:
 
-- Latest release version: 2.0.0
-- Latest development snapshot: 2.0.1-SNAPSHOT
+- Latest release version: 2.0.1
+- Latest development snapshot: 2.0.2-SNAPSHOT
 
 *Please note that versions 0.9.x and 1.x are from previous generation of this library - they are completely different in api and obsolete.*
 
@@ -83,7 +83,7 @@ repositories {
     ...
 }
 
-compile ('eu.livotov.labs:zxscanlib:2.0.0@aar') {transitive=true}
+compile ('eu.livotov.labs:zxscanlib:2.0.1@aar') {transitive=true}
 
 ```
 
