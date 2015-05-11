@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="eu.livotov.zxscan.zxscandemoapp">
+<manifest
+    package="eu.livotov.zxscan.zxscandemoapp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
+<uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
-            tools:replace="android:icon,android:theme,android:label"
             android:allowBackup="true"
             android:icon="@drawable/ic_launcher"
             android:label="@string/demo_app_name"
