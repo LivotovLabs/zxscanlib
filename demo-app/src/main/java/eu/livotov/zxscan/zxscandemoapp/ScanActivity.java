@@ -39,6 +39,12 @@ public class ScanActivity extends ActionBarActivity implements ScannerView.Scann
     }
 
     @Override
+    public void onScannerStopped()
+    {
+
+    }
+
+    @Override
     public void onScannerFailure(int cameraError)
     {
 

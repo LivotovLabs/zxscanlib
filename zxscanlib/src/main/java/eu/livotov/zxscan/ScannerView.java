@@ -3,8 +3,10 @@ package eu.livotov.zxscan;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.Camera;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -21,7 +23,8 @@ import eu.livotov.zxscan.util.SoundPlayer;
  */
 public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 {
-
+    public final static long DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS = 5000;
+    private volatile long sameCodeRescanProtectionTime = DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS;
     protected CAMView camera;
     protected ImageView hud;
     protected ScannerViewEventListener scannerViewEventListener;
@@ -29,6 +32,9 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     protected int scannerSoundAudioResource = R.raw.beep;
     protected boolean playSound = true;
     protected SoundPlayer soundPlayer;
+    private volatile String lastDataDecoded;
+    private volatile long lastDataDecodedTimestamp;
+    private Handler decodingHandler;
 
     public ScannerView(final Context context)
     {
@@ -44,6 +50,7 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         camera.setCamViewListener(this);
         decoder = new ZXDecoder();
         soundPlayer = new SoundPlayer(getContext());
+        decodingHandler = new Handler();
     }
 
     protected int getScannerLayoutResource()
@@ -72,12 +79,23 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 
     public void startScanner()
     {
+        lastDataDecoded = null;
         camera.start();
     }
 
     public void stopScanner()
     {
         camera.stop();
+    }
+
+    public long getSameCodeRescanProtectionTime()
+    {
+        return sameCodeRescanProtectionTime;
+    }
+
+    public void setSameCodeRescanProtectionTime(long sameCodeRescanProtectionTime)
+    {
+        this.sameCodeRescanProtectionTime = sameCodeRescanProtectionTime;
     }
 
     public CAMView getCamera()
@@ -135,6 +153,14 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         }
     }
 
+    public void onCameraStopped()
+    {
+        if (scannerViewEventListener != null)
+        {
+            scannerViewEventListener.onScannerStopped();
+        }
+    }
+
     public void onCameraError(final int err, final Camera camera)
     {
         if (scannerViewEventListener != null)
@@ -143,11 +169,58 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         }
     }
 
-    public void onPreviewData(final byte[] bytes, final int i, final Camera.Size size)
+    public void onCameraOpenError(final Throwable err)
     {
         if (scannerViewEventListener != null)
         {
-            final String data = decoder.decode(bytes, size.width, size.height);
+            scannerViewEventListener.onScannerFailure(-1);
+        }
+    }
+
+    public boolean onPreviewData(final byte[] bytes, final int i, final Camera.Size size)
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    final String data = decoder.decode(bytes, size.width, size.height);
+
+                    if (!TextUtils.isEmpty(data) && (lastDataDecoded == null || !lastDataDecoded.equalsIgnoreCase(data) || (System.currentTimeMillis() - lastDataDecodedTimestamp) > sameCodeRescanProtectionTime))
+                    {
+                        lastDataDecoded = data;
+                        lastDataDecodedTimestamp = System.currentTimeMillis();
+
+                        decodingHandler.post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                notifyBarcodeRead(data);
+                            }
+                        });
+                    }
+                }
+                catch (Throwable err)
+                {
+                    Log.e(ScannerView.class.getSimpleName(), "Decoding error: " + err.getMessage(), err);
+                }
+                finally
+                {
+                    camera.enablePreviewGrabbing();
+                }
+            }
+        }).start();
+
+        return false;
+    }
+
+    protected void notifyBarcodeRead(final String data)
+    {
+        if (scannerViewEventListener != null)
+        {
             if (!TextUtils.isEmpty(data))
             {
                 if (scannerViewEventListener.onCodeScanned(data))
@@ -169,6 +242,8 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     public interface ScannerViewEventListener
     {
         void onScannerReady();
+
+        void onScannerStopped();
 
         void onScannerFailure(int cameraError);
 

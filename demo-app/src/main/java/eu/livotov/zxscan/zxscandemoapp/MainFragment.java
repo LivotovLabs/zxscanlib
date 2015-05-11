@@ -114,6 +114,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Scan
     }
 
     @Override
+    public void onScannerStopped()
+    {
+
+    }
+
+    @Override
     public void onScannerFailure(int cameraError)
     {
         Toast.makeText(getActivity(), getString(R.string.camera_error, cameraError), Toast.LENGTH_LONG).show();

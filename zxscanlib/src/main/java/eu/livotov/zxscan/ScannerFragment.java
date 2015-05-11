@@ -63,6 +63,12 @@ public class ScannerFragment extends Fragment implements ScannerView.ScannerView
     }
 
     @Override
+    public void onScannerStopped()
+    {
+
+    }
+
+    @Override
     public void onScannerFailure(int cameraError)
     {
 
