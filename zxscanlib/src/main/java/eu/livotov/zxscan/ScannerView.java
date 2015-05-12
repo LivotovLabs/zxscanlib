@@ -4,15 +4,16 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import eu.livotov.labs.android.camview.CAMView;
+import eu.livotov.zxscan.core.DecoderThread;
 import eu.livotov.zxscan.decoder.BarcodeDecoder;
 import eu.livotov.zxscan.decoder.zxing.ZXDecoder;
 import eu.livotov.zxscan.util.SoundPlayer;
@@ -24,7 +25,6 @@ import eu.livotov.zxscan.util.SoundPlayer;
 public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 {
     public final static long DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS = 5000;
-    private volatile long sameCodeRescanProtectionTime = DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS;
     protected CAMView camera;
     protected ImageView hud;
     protected ScannerViewEventListener scannerViewEventListener;
@@ -32,9 +32,11 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     protected int scannerSoundAudioResource = R.raw.beep;
     protected boolean playSound = true;
     protected SoundPlayer soundPlayer;
+    private volatile long sameCodeRescanProtectionTime = DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS;
     private volatile String lastDataDecoded;
     private volatile long lastDataDecodedTimestamp;
-    private Handler decodingHandler;
+    private DecoderThread decoderThread;
+    private DecoderResultHandler decoderResultHandler;
 
     public ScannerView(final Context context)
     {
@@ -50,7 +52,6 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         camera.setCamViewListener(this);
         decoder = new ZXDecoder();
         soundPlayer = new SoundPlayer(getContext());
-        decodingHandler = new Handler();
     }
 
     protected int getScannerLayoutResource()
@@ -80,12 +81,32 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     public void startScanner()
     {
         lastDataDecoded = null;
+        initThreadingSubsystem();
         camera.start();
+    }
+
+    private void initThreadingSubsystem()
+    {
+        decoderResultHandler = new DecoderResultHandler();
+        decoderThread = new DecoderThread(decoderResultHandler, decoder);
+        decoderThread.start();
     }
 
     public void stopScanner()
     {
+        shutodownThreadingSubsystem();
         camera.stop();
+    }
+
+    private void shutodownThreadingSubsystem()
+    {
+        if (decoderThread != null)
+        {
+            decoderThread.shutdown();
+        }
+
+        decoderResultHandler = null;
+        decoderThread = null;
     }
 
     public long getSameCodeRescanProtectionTime()
@@ -171,6 +192,7 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 
     public void onCameraOpenError(final Throwable err)
     {
+        shutodownThreadingSubsystem();
         if (scannerViewEventListener != null)
         {
             scannerViewEventListener.onScannerFailure(-1);
@@ -179,42 +201,30 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 
     public boolean onPreviewData(final byte[] bytes, final int i, final Camera.Size size)
     {
-        new Thread(new Runnable()
+        if (decoderThread != null)
         {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    final String data = decoder.decode(bytes, size.width, size.height);
+            decoderThread.submitBarcodeRecognitionTask(bytes, size.width, size.height);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 
-                    if (!TextUtils.isEmpty(data) && (lastDataDecoded == null || !lastDataDecoded.equalsIgnoreCase(data) || (System.currentTimeMillis() - lastDataDecodedTimestamp) > sameCodeRescanProtectionTime))
-                    {
-                        lastDataDecoded = data;
-                        lastDataDecodedTimestamp = System.currentTimeMillis();
+    private void processRecognizedBarcode(String data)
+    {
+        if (TextUtils.isEmpty(lastDataDecoded) || !lastDataDecoded.equalsIgnoreCase(data) || (System.currentTimeMillis() - lastDataDecodedTimestamp) > sameCodeRescanProtectionTime)
+        {
+            lastDataDecoded = data;
+            lastDataDecodedTimestamp = System.currentTimeMillis();
+            notifyBarcodeRead(data);
+        }
 
-                        decodingHandler.post(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                notifyBarcodeRead(data);
-                            }
-                        });
-                    }
-                }
-                catch (Throwable err)
-                {
-                    Log.e(ScannerView.class.getSimpleName(), "Decoding error: " + err.getMessage(), err);
-                }
-                finally
-                {
-                    camera.enablePreviewGrabbing();
-                }
-            }
-        }).start();
-
-        return false;
+        if (camera != null)
+        {
+            camera.enablePreviewGrabbing();
+        }
     }
 
     protected void notifyBarcodeRead(final String data)
@@ -239,6 +249,14 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         }
     }
 
+    private void processEmptyBarcode()
+    {
+        if (camera != null)
+        {
+            camera.enablePreviewGrabbing();
+        }
+    }
+
     public interface ScannerViewEventListener
     {
         void onScannerReady();
@@ -248,5 +266,22 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         void onScannerFailure(int cameraError);
 
         boolean onCodeScanned(final String data);
+    }
+
+    class DecoderResultHandler extends Handler
+    {
+
+        @Override
+        public void handleMessage(Message msg)
+        {
+            if (msg.what == R.id.zxscanlib_core_message_decode_result_ok)
+            {
+                processRecognizedBarcode((String) msg.obj);
+            }
+            else if (msg.what == R.id.zxscanlib_core_message_decode_result_nodata)
+            {
+                processEmptyBarcode();
+            }
+        }
     }
 }
