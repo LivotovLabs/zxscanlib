@@ -29,7 +29,7 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     protected ImageView hud;
     protected ScannerViewEventListener scannerViewEventListener;
     protected BarcodeDecoder decoder;
-    protected int scannerSoundAudioResource = R.raw.beep;
+    protected int scannerSoundAudioResource = R.raw.zxscanlib_beep;
     protected boolean playSound = true;
     protected SoundPlayer soundPlayer;
     private volatile long sameCodeRescanProtectionTime = DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS;
@@ -56,7 +56,7 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 
     protected int getScannerLayoutResource()
     {
-        return R.layout.view_scanner;
+        return R.layout.zxscanlib_view_scanner;
     }
 
     public ScannerView(final Context context, final AttributeSet attrs)

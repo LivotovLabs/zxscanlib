@@ -18,7 +18,7 @@ public class ScannerFragment extends Fragment implements ScannerView.ScannerView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_scanner, container, false);
+        View rootView = inflater.inflate(R.layout.zxscanlib_fragment_scanner, container, false);
         return rootView;
     }
 
