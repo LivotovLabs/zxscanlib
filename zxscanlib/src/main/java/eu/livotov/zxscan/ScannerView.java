@@ -25,6 +25,7 @@ import eu.livotov.zxscan.util.SoundPlayer;
 public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 {
     public final static long DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS = 5000;
+    public final static long DEFAULT_DECODE_THROTTLE_MS = 100;
     protected CAMView camera;
     protected ImageView hud;
     protected ScannerViewEventListener scannerViewEventListener;
@@ -35,6 +36,8 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     private volatile long sameCodeRescanProtectionTime = DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS;
     private volatile String lastDataDecoded;
     private volatile long lastDataDecodedTimestamp;
+    private volatile long lastDataSubmittedTimestamp;
+    private volatile long decodeThrottleMillis = DEFAULT_DECODE_THROTTLE_MS;
     private DecoderThread decoderThread;
     private DecoderResultHandler decoderResultHandler;
 
@@ -119,6 +122,16 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         this.sameCodeRescanProtectionTime = sameCodeRescanProtectionTime;
     }
 
+    public long getDecodeThrottleMillis()
+    {
+        return decodeThrottleMillis;
+    }
+
+    public void setDecodeThrottleMillis(long throttle)
+    {
+        this.decodeThrottleMillis = throttle;
+    }
+
     public CAMView getCamera()
     {
         return camera;
@@ -201,8 +214,10 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 
     public boolean onPreviewData(final byte[] bytes, final int i, final Camera.Size size)
     {
-        if (decoderThread != null)
+        long currentTime = System.currentTimeMillis();
+        if (decoderThread != null && currentTime - lastDataSubmittedTimestamp > decodeThrottleMillis)
         {
+            lastDataSubmittedTimestamp = currentTime;
             decoderThread.submitBarcodeRecognitionTask(bytes, size.width, size.height);
             return false;
         }
