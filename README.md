@@ -3,8 +3,7 @@ ZXScanLib for Android v2
 
 Android library for adding barcode scanning functionality into any Android app with ease.
 
-The library uses ZXing and ZBar (at your choice) as core barcodes decoding engines and our own camera streaming library
-and is very lightweight, customizable and extremely easy to embed into the application.
+The library uses ZXing core as default decoder engine and our own camera streaming library and is very lightweight, customizable and extremely easy to embed into the application.
 
 ![Screenshot](zxscanlibSampleScreenshot.png)
 
@@ -53,8 +52,6 @@ Known Issues
 ------------
 
 - Currently scanner tries to recognize all supported barcodes. Option to try only specified types will be added shortly.
-- With ZXing engine (default), 1D barcodes are read when the barcode is placed vertically. This should be corrected later (if possible)
-- ZBar engine is not yet available
 
 
 Getting It
@@ -69,7 +66,7 @@ ZXScanLib is available from maven repository:
 Available versions:
 
 - Latest release version: 2.0.1
-- Latest development snapshot: 2.1.0-SNAPSHOT
+- Latest development snapshot: 2.1.1-SNAPSHOT
 
 *Please note that versions 0.9.x and 1.x are from previous generation of this library - they are completely different in api and obsolete.*
 
@@ -139,10 +136,7 @@ internally in ZXScanLib for streaming and capturing live data from the device ca
 Credits
 -------
 
-Thanks ZXing and ZBar for core decoding engines that are used to decode captured bitmaps:
-
-- The ZXing project: https://github.com/zxing/zxing
-- The ZBar Android SDK: http://sourceforge.net/projects/zbar/files/AndroidSDK/
+Thanks ZXing (https://github.com/zxing/zxing) for the core decoding engine that is used as default processor to decode captured bitmaps !
 
 
 License
