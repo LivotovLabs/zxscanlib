@@ -25,7 +25,8 @@ import eu.livotov.zxscan.util.SoundPlayer;
 public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 {
     public final static long DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS = 5000;
-    public final static long DEFAULT_DECODE_THROTTLE_MS = 100;
+    public final static long DEFAULT_DECODE_THROTTLE_MS = 300;
+
     protected CAMView camera;
     protected ImageView hud;
     protected ScannerViewEventListener scannerViewEventListener;
@@ -214,7 +215,8 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
 
     public boolean onPreviewData(final byte[] bytes, final int i, final Camera.Size size)
     {
-        long currentTime = System.currentTimeMillis();
+        final long currentTime = System.currentTimeMillis();
+
         if (decoderThread != null && currentTime - lastDataSubmittedTimestamp > decodeThrottleMillis)
         {
             lastDataSubmittedTimestamp = currentTime;
