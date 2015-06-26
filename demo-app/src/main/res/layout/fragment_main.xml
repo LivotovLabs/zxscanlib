@@ -23,6 +23,13 @@
         android:layout_weight="0"
         android:text="@string/test_in_view"/>
 
+    <Button
+        android:id="@+id/btnTestInViewFront"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="@string/test_in_view_front"/>
+
     <FrameLayout
         android:id="@+id/scannerRoot"
         android:layout_width="match_parent"

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import eu.livotov.labs.android.camview.CameraEnumeration;
 import eu.livotov.zxscan.ScannerView;
 
 /**
@@ -17,7 +18,7 @@ import eu.livotov.zxscan.ScannerView;
 public class MainFragment extends Fragment implements View.OnClickListener, ScannerView.ScannerViewEventListener
 {
 
-    View btnOpenScannerInSeparateActivity, btnOpenEmbeddedScanner, btnCloseScanner, embeddedScannerRoot, waitLabel;
+    View btnOpenScannerInSeparateActivity, btnOpenEmbeddedScanner, btnOpenEmbeddedScannerFront, btnCloseScanner, embeddedScannerRoot, waitLabel;
     ScannerView embeddedScanner;
     private String lastEmbeddedScannerScannedData;
     private long lastEmbeddedScannerScannedDataTimestamp;
@@ -38,6 +39,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Scan
                 startEmbeddedScanner();
                 break;
 
+            case R.id.btnTestInViewFront:
+                startEmbeddedScannerFront();
+                break;
+
             case R.id.btnStopScanner:
                 stopEmbeddedScanner();
                 break;
@@ -49,6 +54,32 @@ public class MainFragment extends Fragment implements View.OnClickListener, Scan
         embeddedScannerRoot.setVisibility(View.VISIBLE);
         waitLabel.setVisibility(View.VISIBLE);
         embeddedScanner.startScanner();
+    }
+
+    private void startEmbeddedScannerFront()
+    {
+        embeddedScannerRoot.setVisibility(View.VISIBLE);
+        waitLabel.setVisibility(View.VISIBLE);
+
+        CameraEnumeration frontCamera = null;
+        for (CameraEnumeration cam : embeddedScanner.getAvailableCameras())
+        {
+            if (cam.isFrontCamera())
+            {
+                frontCamera = cam;
+                break;
+            }
+        }
+
+        if (frontCamera != null)
+        {
+            embeddedScanner.startScanner(frontCamera);
+        }
+        else
+        {
+            Toast.makeText(getActivity(), R.string.no_front_camera_found, Toast.LENGTH_SHORT).show();
+            embeddedScanner.startScanner();
+        }
     }
 
     private void stopEmbeddedScanner()
@@ -81,6 +112,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Scan
         super.onViewCreated(view, savedInstanceState);
         btnOpenScannerInSeparateActivity = view.findViewById(R.id.btnTestInActivity);
         btnOpenEmbeddedScanner = view.findViewById(R.id.btnTestInView);
+        btnOpenEmbeddedScannerFront = view.findViewById(R.id.btnTestInViewFront);
         btnCloseScanner = view.findViewById(R.id.btnStopScanner);
         embeddedScanner = (ScannerView) view.findViewById(R.id.scanner);
         embeddedScannerRoot = view.findViewById(R.id.scannerRoot);
@@ -88,6 +120,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Scan
 
         btnOpenScannerInSeparateActivity.setOnClickListener(this);
         btnOpenEmbeddedScanner.setOnClickListener(this);
+        btnOpenEmbeddedScannerFront.setOnClickListener(this);
         btnCloseScanner.setOnClickListener(this);
 
         embeddedScanner.setScannerViewEventListener(this);

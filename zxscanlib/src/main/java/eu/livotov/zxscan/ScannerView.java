@@ -12,7 +12,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import java.util.Collection;
+
 import eu.livotov.labs.android.camview.CAMView;
+import eu.livotov.labs.android.camview.CameraEnumeration;
 import eu.livotov.zxscan.core.DecoderThread;
 import eu.livotov.zxscan.decoder.BarcodeDecoder;
 import eu.livotov.zxscan.decoder.zxing.ZXDecoder;
@@ -82,11 +85,42 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         initUI();
     }
 
+    /**
+     * Provides the list of all available cameras on this device
+     *
+     * @return
+     */
+    public Collection<CameraEnumeration> getAvailableCameras()
+    {
+        return CAMView.enumarateCameras();
+    }
+
+    /**
+     * Starts scanner, using device default camera
+     */
     public void startScanner()
+    {
+        startScanner(null);
+    }
+
+    /**
+     * Starts scanner, using particular camera. Use {@link #getAvailableCameras()} in order to get a list of all accessible cameras on this device
+     *
+     * @param camInfo
+     */
+    public void startScanner(CameraEnumeration camInfo)
     {
         lastDataDecoded = null;
         initThreadingSubsystem();
-        camera.start();
+
+        if (camInfo == null)
+        {
+            camera.start();
+        }
+        else
+        {
+            camera.start(camInfo.getCameraId());
+        }
     }
 
     private void initThreadingSubsystem()
@@ -96,6 +130,9 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         decoderThread.start();
     }
 
+    /**
+     * Stops currently running scanner
+     */
     public void stopScanner()
     {
         shutodownThreadingSubsystem();
