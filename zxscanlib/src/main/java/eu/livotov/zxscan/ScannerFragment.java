@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * (c) Livotov Labs Ltd. 2012
@@ -32,13 +33,50 @@ public class ScannerFragment extends Fragment implements ScannerView.ScannerView
     public void onResume()
     {
         super.onResume();
-        scanner.startScanner();
+
+        try
+        {
+            scanner.startScanner();
+        }
+        catch (Throwable err)
+        {
+            onCameraOpenError(err);
+        }
+    }
+
+    /**
+     * In case we're calling startScanner before the previous scanner session is finished (quick activity start-stop-start) or
+     * camera is used by another app - startScanner() method may raise a RuntimeException, so we need to handle it here.
+     * Override this method to add a custom action. Default behaviour is to show a toast.
+     *
+     * @param error
+     */
+    protected void onCameraOpenError(Throwable error)
+    {
+        Toast.makeText(getActivity(), getString(R.string.zxscanlib_string_camerainfragment_error, error.getMessage()), Toast.LENGTH_LONG).show();
     }
 
     public void onPause()
     {
-        scanner.stopScanner();
+        try
+        {
+            scanner.stopScanner();
+        }
+        catch (Throwable err)
+        {
+            onCameraCloseError(err);
+        }
         super.onPause();
+    }
+
+    /**
+     * If we're stopping scanner before it was initialized (quick activity start and stop), stopScanner() method may raise a RuntimeException about that,
+     * so one need either to handle it or ignore. Override this method to add custom action on error. Default action is ignore.
+     *
+     * @param error camera close error
+     */
+    protected void onCameraCloseError(Throwable error)
+    {
     }
 
     public ScannerView.ScannerViewEventListener getScannerViewEventListener()

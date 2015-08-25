@@ -35,6 +35,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(":zxscanlib")
-    compile 'eu.livotov.labs:camview:1.1.0@aar'
+    compile 'eu.livotov.labs:camview:1.1.4-SNAPSHOT@aar'
     compile 'com.android.support:appcompat-v7:22.2.0'
 }

@@ -10,7 +10,6 @@
     <string name="close_scanner">Stop</string>
     <string name="please_wait">Starting Camera...</string>
     <string name="camera_error">Camera initialization error: %s</string>
-    <string name="camera_err3or">Camera initialization error: %s</string>
     <string name="no_front_camera_found">No front facing camera found, using default one instead...</string>
 
 </resources>

@@ -31,15 +31,10 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'eu.livotov.labs:camview:1.1.0@aar'
+    compile 'eu.livotov.labs:camview:1.1.4-SNAPSHOT@aar'
 }
 
 apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
