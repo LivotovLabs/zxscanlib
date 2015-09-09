@@ -1,9 +1,21 @@
 ZXScanLib for Android v2
 ========================
 
-Android library for adding barcode scanning functionality into any Android app with ease.
+Project merged and moved !
+---
+**IMPORTANT INFORMATION** - this project is now merged with another one, called CAMView: https://github.com/LivotovLabs/CamView
 
-The library uses ZXing core as default decoder engine and our own camera streaming library and is very lightweight, customizable and extremely easy to embed into the application.
+All future development of this scanner library will happen inside the CAMView repository. Please post your issues and download
+sources, new snapshots and releases there: https://github.com/LivotovLabs/CamView
+
+We believe both ZXScanLib and CAMView have a lot of common (moreover, ZXScanLib depends on a CAMView), so having it as a single solid project will boost productivity and add more transparency.
+
+All previous ZXScanLib releases will remain in the maven repo forever, so no current production apps should be affected.
+
+
+
+Old Project Informatin (deprecated)
+---
 
 ![Screenshot](zxscanlibSampleScreenshot.png)
 
