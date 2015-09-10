@@ -6,9 +6,9 @@ Project merged and moved !
 **IMPORTANT INFORMATION** - this project is now merged with another one, called CAMView: https://github.com/LivotovLabs/CamView
 
 All future development of this scanner library will happen inside the CAMView repository. Please post your issues and download
-sources, new snapshots and releases there: https://github.com/LivotovLabs/CamView
+sources, new snapshots and releases from there: https://github.com/LivotovLabs/CamView
 
-We believe both ZXScanLib and CAMView have a lot of common (moreover, ZXScanLib depends on a CAMView), so having it as a single solid project will boost productivity and add more transparency.
+We believe both ZXScanLib and CAMView have a lot of common (moreover, ZXScanLib depends on CAMView), so having it as a single solid project will boost productivity, add more transparency and reduce number of bugs.
 
 All previous ZXScanLib releases will remain in the maven repo forever, so no current production apps should be affected.
 
